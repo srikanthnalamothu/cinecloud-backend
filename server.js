@@ -1,11 +1,37 @@
 const express = require('express');
-const app = express();
-const port = 3200;
+const bodyParser = require('body-parser');
+const userRoutes  = require("./app/routers/userRouter");
+const genreRoutes = require('./app/routers/genreRouter');
+const languageRoutes = require('./app/routers/languageRouter');
+const movieRoutes = require('./app/routers/movieRouter');
+const db = require("./app/models");
 
-app.get('/', (req, res) => {
-  res.send('Welcome to Cinecloud backend!');
+const cors = require("cors");
+
+const app = express();
+const PORT = 3200;
+
+let corsOptions = {
+  origin: "*",
+};
+app.use(cors(corsOptions));
+app.options("*", cors());
+
+app.use(bodyParser.json());
+app.use(userRoutes);
+app.use('/genres',genreRoutes);
+app.use('/languages',languageRoutes);
+app.use('/movies',movieRoutes);
+
+//uncomment to create tables
+
+db.sequelize.sync().then(() => {
+  console.log('Database synced');
+}).catch((error) => {
+  console.error('Error syncing database:', error);
 });
 
-app.listen(port, () => {
-  console.log(`Cinecloud backend listening at http://localhost:${port}`);
+
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
 });
