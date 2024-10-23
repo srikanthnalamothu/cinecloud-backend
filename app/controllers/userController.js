@@ -8,12 +8,14 @@ const { encrypt, getSalt, hashPassword } = require("../authentication/crypto");
 
 // Create and Save a new User
 exports.create = async (req, res) => {
+  try {
   console.log("user",req.body)
   // Validate request
   if (req.body.firstName === undefined) {
-    const error = new Error("First name cannot be empty for user!");
-    error.statusCode = 400;
-    throw error;
+    throw new Error("First name cannot be empty for user!",400);
+    // error.statusCode = 400;
+    // throw error;
+    // res.status(400).send({error: "First name should not be null or empty"})
   } else if (req.body.lastName === undefined) {
     const error = new Error("Last name cannot be empty for user!");
     error.statusCode = 400;
@@ -95,6 +97,10 @@ exports.create = async (req, res) => {
     .catch((err) => {
       return err.message || "Error retrieving User with email=" + email;
     });
+  }
+  catch(e) {
+    res.status(e.statusCode).send({ error: e.message})
+  }
 };
 
 // Retrieve all Users from the database.
@@ -226,3 +232,8 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+
+exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+}

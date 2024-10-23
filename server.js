@@ -4,6 +4,7 @@ const userRoutes  = require("./app/routers/userRouter");
 const genreRoutes = require('./app/routers/genreRouter');
 const languageRoutes = require('./app/routers/languageRouter');
 const movieRoutes = require('./app/routers/movieRouter');
+const authRoutes = require('./app/routers/authRouter');
 const db = require("./app/models");
 
 const cors = require("cors");
@@ -18,7 +19,8 @@ app.use(cors(corsOptions));
 app.options("*", cors());
 
 app.use(bodyParser.json());
-app.use(userRoutes);
+app.use(authRoutes);
+app.use("/users",userRoutes);
 app.use('/genres',genreRoutes);
 app.use('/languages',languageRoutes);
 app.use('/movies',movieRoutes);
