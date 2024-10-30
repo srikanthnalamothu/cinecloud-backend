@@ -1,6 +1,6 @@
 const db = require("../models")
 const User = db.user
-const Session = require('../models/session');
+const Session = db.session
 const { hashPassword } = require("./crypto");
 
 authenticate = async (req, res, require = true) => {

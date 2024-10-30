@@ -18,6 +18,9 @@ let corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors());
 
+app.get('/', (req, res) => {
+  res.send("welcome to cinecloud bckend");
+});
 app.use(bodyParser.json());
 app.use(authRoutes);
 app.use("/users",userRoutes);
