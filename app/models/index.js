@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize('cine_cloud', 'root', '', {
+const sequelize = new Sequelize('cine_cloud', 'shiva', '123456', {
   host: 'localhost',
   port: '3306',
   dialect: 'mysql',
