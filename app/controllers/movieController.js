@@ -1,10 +1,16 @@
 const db = require("../models");
+const { Op } = db.Sequelize;
 const Movie = db.movie;
+const path = require('path');
+const fs = require('fs');
+const Order = db.order;
+const Genre = db.genre;
+const Language = db.language;
 
 // Controller actions for movie
 exports.getAllMovies = async (req, res) => {
   try {
-    const { genre_id, language_id } = req.query;
+    const { genre_id, language_id, search } = req.query;
     
     const whereClause = {};
     
@@ -18,13 +24,22 @@ exports.getAllMovies = async (req, res) => {
       whereClause.language_id = language_id;
     }
 
+    // Add search functionality
+    if (search) {
+      whereClause[Op.or] = [
+        { title: { [Op.like]: `%${search}%` } },
+        { description: { [Op.like]: `%${search}%` } }
+      ];
+    }
+
     const movies = await Movie.findAll({
-      where: whereClause, // Apply filtering based on query parameters
+      where: whereClause,
+      order: [['createdAt', 'DESC']] // Optional: sort by newest first
     });
 
     res.json(movies);
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching movies:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -71,7 +86,7 @@ exports.getMovieById = async (req, res) => {
 
 exports.updateMovie = async (req, res) => {
   const { id } = req.params;
-  const { title, description, releaseDate, imageUrl, genre_id, language_id,duration, videoUrl } = req.body;
+  const { title, description, releaseDate, imageUrl, genre_id, language_id,duration, videoUrl, cost } = req.body;
 
   try {
     const movie = await Movie.findByPk(id);
@@ -88,6 +103,7 @@ exports.updateMovie = async (req, res) => {
     movie.genre_id = genre_id || movie.genre_id;
     movie.language_id = language_id || movie.language_id;
     movie.videoUrl = videoUrl || movie.videoUrl;
+    movie.cost = cost || movie.cost;
 
     // Save the updated movie to the database
     await movie.save();

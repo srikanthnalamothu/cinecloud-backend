@@ -12,10 +12,9 @@ exports.create = async (req, res) => {
   console.log("user",req.body)
   // Validate request
   if (req.body.firstName === undefined) {
-    throw new Error("First name cannot be empty for user!",400);
-    // error.statusCode = 400;
-    // throw error;
-    // res.status(400).send({error: "First name should not be null or empty"})
+    const error = new Error("First name should not be null or empty");
+    error.statusCode = 400;
+    throw error;
   } else if (req.body.lastName === undefined) {
     const error = new Error("Last name cannot be empty for user!");
     error.statusCode = 400;
