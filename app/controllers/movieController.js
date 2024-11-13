@@ -44,6 +44,40 @@ exports.getAllMovies = async (req, res) => {
   }
 };
 
+exports.getMoviesByBulk = async (req, res) => {
+  try {
+    const { movieIds } = req.body;
+
+    // Validate input
+    if (!movieIds || !Array.isArray(movieIds)) {
+      return res.status(400).json({ 
+        message: 'Invalid request. movieIds must be an array.' 
+      });
+    }
+
+    // Filter out any non-numeric values and duplicates
+    const validIds = [...new Set(movieIds.filter(id => !isNaN(id)))];
+
+    if (validIds.length === 0) {
+      return res.json([]); // Return empty array if no valid IDs
+    }
+
+    const movies = await Movie.findAll({
+      where: {
+        id: {
+          [Op.in]: validIds
+        }
+      },
+      order: [['createdAt', 'DESC']] // Optional: sort by newest first
+    });
+
+    res.json(movies);
+  } catch (error) {
+    console.error('Error fetching movies by bulk:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 
 exports.createMovie = async (req, res) => {
   const { title, description, releaseDate, runtime, imageUrl, genre_id, language_id, duration, videoUrl } = req.body;
