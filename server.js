@@ -4,6 +4,7 @@ const userRoutes  = require("./app/routers/userRouter");
 const genreRoutes = require('./app/routers/genreRouter');
 const languageRoutes = require('./app/routers/languageRouter');
 const movieRoutes = require('./app/routers/movieRouter');
+const orderRoutes = require('./app/routers/orderRouter');
 const authRoutes = require('./app/routers/authRouter');
 const db = require("./app/models");
 
@@ -18,15 +19,13 @@ let corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors());
 
-app.get('/', (req, res) => {
-  res.send("welcome to cinecloud bckend");
-});
 app.use(bodyParser.json());
 app.use(authRoutes);
 app.use("/users",userRoutes);
 app.use('/genres',genreRoutes);
 app.use('/languages',languageRoutes);
 app.use('/movies',movieRoutes);
+app.use('/orders',orderRoutes);
 
 //uncomment to create tables
 
