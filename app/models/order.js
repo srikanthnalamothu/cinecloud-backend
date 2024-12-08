@@ -9,6 +9,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.FLOAT,
       allowNull: false,
     },
+    paymentId: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
     ordered_date: {
       type: Sequelize.STRING,
       allowNull: false
